@@ -1,0 +1,5 @@
+{
+  "release_id": "baseline",
+  "delivery_smoke_config": ".agent-core/delivery-baseline-smoke.json",
+  "required_paths": []
+}

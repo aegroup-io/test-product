@@ -1,0 +1,87 @@
+{
+  "schema_version": 2,
+  "bundle": {
+    "name": "starter-stack",
+    "version": "0.1.0",
+    "source_manifest": "runtime/starter-stack/runtime-bundle.json"
+  },
+  "modules": [
+    {
+      "name": "platform-api",
+      "version": "0.1.0",
+      "kind": "python-service",
+      "propagation_mode": "versioned",
+      "package_name": "agent-core-platform-api",
+      "package_manager": "uv",
+      "manifest": "pyproject.toml",
+      "bundle_path": "packages/platform-api",
+      "target": "packages/platform-api"
+    },
+    {
+      "name": "platform-worker",
+      "version": "0.1.0",
+      "kind": "worker-service",
+      "propagation_mode": "versioned",
+      "package_name": "agent-core-platform-worker",
+      "package_manager": "uv",
+      "manifest": "pyproject.toml",
+      "bundle_path": "packages/platform-worker",
+      "target": "packages/platform-worker"
+    },
+    {
+      "name": "web-shell",
+      "version": "0.1.0",
+      "kind": "web-app",
+      "propagation_mode": "versioned",
+      "package_name": "@aegroup/agent-core-web-shell",
+      "package_manager": "npm",
+      "manifest": "package.json",
+      "bundle_path": "packages/web-shell",
+      "target": "packages/web-shell"
+    },
+    {
+      "name": "starter-api",
+      "version": "0.1.0",
+      "kind": "python-service",
+      "propagation_mode": "seed-only",
+      "package_name": "orcha-api",
+      "package_manager": "uv",
+      "manifest": "pyproject.toml",
+      "bundle_path": "api",
+      "target": "api"
+    },
+    {
+      "name": "starter-web",
+      "version": "0.1.0",
+      "kind": "web-app",
+      "propagation_mode": "seed-only",
+      "package_name": "orcha-web",
+      "package_manager": "npm",
+      "manifest": "package.json",
+      "bundle_path": "web",
+      "target": "web"
+    },
+    {
+      "name": "starter-mcp",
+      "version": "0.1.0",
+      "kind": "mcp-service",
+      "propagation_mode": "seed-only",
+      "package_name": "orcha-mcp",
+      "package_manager": "uv",
+      "manifest": "pyproject.toml",
+      "bundle_path": "mcp",
+      "target": "mcp"
+    },
+    {
+      "name": "starter-worker",
+      "version": "0.1.0",
+      "kind": "worker-service",
+      "propagation_mode": "seed-only",
+      "package_name": "orcha-worker",
+      "package_manager": "uv",
+      "manifest": "pyproject.toml",
+      "bundle_path": "worker",
+      "target": "worker"
+    }
+  ]
+}

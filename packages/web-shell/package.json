@@ -1,0 +1,29 @@
+{
+  "name": "@aegroup/agent-core-web-shell",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "./src/styles.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./App": "./src/App.tsx",
+    "./styles.css": "./src/styles.css",
+    "./test/setup": "./src/test/setup.ts"
+  },
+  "peerDependencies": {
+    "@azure/msal-browser": "^4.22.1",
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-dropdown-menu": "^2.1.14",
+    "@radix-ui/react-separator": "^1.1.8",
+    "@radix-ui/react-slot": "^1.2.4",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.562.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.3",
+    "tailwind-merge": "^3.4.0"
+  }
+}

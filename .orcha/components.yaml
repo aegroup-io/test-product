@@ -1,0 +1,14 @@
+schema_version: 1
+components:
+- key: test-product
+  name: Test Product
+  type: product
+  owner: primary
+- key: test-product-repo
+  name: test-product
+  type: repository
+  owner: aegroup-io
+edges:
+- from: test-product
+  to: test-product-repo
+  relationship: owns

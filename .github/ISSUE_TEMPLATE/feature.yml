@@ -1,0 +1,92 @@
+name: Feature
+description: Ship a user-visible or operator-visible capability end-to-end.
+title: "[Feature] "
+labels:
+  - "type:feature"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep this issue crisp and testable. Prefer requirements over implementation narration.
+
+        If the primary goal is learning or decision-making, use **Spike** instead.
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What changes for a user or system when this ships? (1-2 sentences)
+      placeholder: |
+        Example: Operators can create a product baseline manifest and track adoption state.
+    validations:
+      required: true
+
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirements (testable)
+      description: Short bullets, each independently verifiable.
+      placeholder: |
+        - ...
+        - ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: Non-goals (explicitly out of scope)
+      placeholder: |
+        - ...
+
+  - type: checkboxes
+    id: impacted_areas
+    attributes:
+      label: Impacted areas
+      options:
+        - label: API changes
+        - label: Background worker or service changes
+        - label: Web or UX changes
+        - label: Infra or deploy changes
+        - label: Docs updates
+        - label: Telemetry or observability updates
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: Given/When/Then bullets, or an equivalent verifiable checklist.
+      placeholder: |
+        - Given ..., when ..., then ...
+        - Given ..., when ..., then ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: demo_test_plan
+    attributes:
+      label: Demo / test plan
+      description: Exact steps, commands, or flows and expected outcomes.
+      placeholder: |
+        1. ...
+        Expected: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies_questions
+    attributes:
+      label: Dependencies / open questions
+      placeholder: |
+        - Depends on: #...
+        - Open question: ...
+
+  - type: textarea
+    id: agent_brief
+    attributes:
+      label: Agent brief (optional)
+      description: If delegating, include target areas, constraints, and what success looks like.
+      placeholder: |
+        Target areas: ...
+        Constraints: ...
+        Success looks like: ...

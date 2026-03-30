@@ -1,0 +1,174 @@
+name: Advisory Code Review
+
+on:
+  pull_request:
+    branches: ["dev"]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number to review
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: write
+
+jobs:
+  advisory-review:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Resolve review context
+        id: context
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "pr_number=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+            echo "base_ref=${{ github.event.pull_request.base.ref }}" >> "$GITHUB_OUTPUT"
+            echo "head_sha=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+            echo "same_repo=true" >> "$GITHUB_OUTPUT"
+          else
+            pr_number="${{ inputs.pr_number }}"
+            base_ref="$(gh pr view "$pr_number" --json baseRefName -q .baseRefName)"
+            head_sha="$(gh pr view "$pr_number" --json headRefOid -q .headRefOid)"
+            is_cross_repository="$(gh pr view "$pr_number" --json isCrossRepository -q .isCrossRepository)"
+            echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
+            echo "base_ref=${base_ref}" >> "$GITHUB_OUTPUT"
+            echo "head_sha=${head_sha}" >> "$GITHUB_OUTPUT"
+            if [ "${is_cross_repository}" = "true" ]; then
+              echo "same_repo=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "same_repo=true" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Checkout pull request head (pull_request)
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.context.outputs.head_sha }}
+
+      - name: Checkout pull request head (workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch' && steps.context.outputs.same_repo == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.context.outputs.head_sha }}
+
+      - uses: actions/setup-node@v4
+        if: steps.context.outputs.same_repo == 'true'
+        with:
+          node-version: "22"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Detect Codex auth
+        id: auth
+        if: steps.context.outputs.same_repo == 'true'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -n "${OPENAI_API_KEY}" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Codex CLI
+        id: install
+        if: steps.context.outputs.same_repo == 'true' && steps.auth.outputs.available == 'true'
+        continue-on-error: true
+        run: npm install -g @openai/codex --include=optional
+
+      - name: Login to Codex
+        id: login
+        if: steps.context.outputs.same_repo == 'true' && steps.auth.outputs.available == 'true' && steps.install.outcome == 'success'
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: printenv OPENAI_API_KEY | codex login --with-api-key
+
+      - name: Run advisory review
+        id: review
+        if: steps.context.outputs.same_repo == 'true' && steps.auth.outputs.available == 'true' && steps.install.outcome == 'success' && steps.login.outcome == 'success'
+        continue-on-error: true
+        env:
+          CODEX_REVIEW_MODEL: ${{ vars.CODEX_REVIEW_MODEL }}
+          CODEX_SANDBOX_MODE: danger-full-access
+        run: |
+          python3 scripts/run_advisory_code_review.py \
+            --base-ref "origin/${{ steps.context.outputs.base_ref }}" \
+            --pr-number "${{ steps.context.outputs.pr_number }}" \
+            --output-dir "${RUNNER_TEMP}/advisory-code-review"
+
+      - name: Write fork bypass report
+        if: github.event_name == 'workflow_dispatch' && steps.context.outputs.same_repo != 'true'
+        run: |
+          python3 scripts/run_advisory_code_review.py \
+            --base-ref "origin/${{ steps.context.outputs.base_ref }}" \
+            --pr-number "${{ steps.context.outputs.pr_number }}" \
+            --output-dir "${RUNNER_TEMP}/advisory-code-review" \
+            --write-unavailable "Advisory Codex review is skipped for fork pull requests because repository secrets must not run against untrusted pull-request code."
+
+      - name: Write unavailable report
+        if: steps.context.outputs.same_repo == 'true' && (steps.auth.outputs.available != 'true' || steps.install.outcome == 'failure' || steps.login.outcome == 'failure' || steps.review.outcome == 'failure')
+        run: |
+          if [ "${{ steps.auth.outputs.available }}" != "true" ]; then
+            reason="OPENAI_API_KEY is not configured for the repository."
+          elif [ "${{ steps.install.outcome }}" = "failure" ]; then
+            reason="Codex CLI install failed. Check the workflow logs and artifact bundle."
+          elif [ "${{ steps.login.outcome }}" = "failure" ]; then
+            reason="Codex CLI login failed. Check the workflow logs and artifact bundle."
+          else
+            reason="Codex review execution failed. Check the workflow logs and artifact bundle."
+          fi
+          python3 scripts/run_advisory_code_review.py \
+            --base-ref "origin/${{ steps.context.outputs.base_ref }}" \
+            --pr-number "${{ steps.context.outputs.pr_number }}" \
+            --output-dir "${RUNNER_TEMP}/advisory-code-review" \
+            --write-unavailable "${reason}"
+
+      - name: Upload advisory review artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: advisory-code-review
+          retention-days: 14
+          path: ${{ runner.temp }}/advisory-code-review
+
+      - name: Add review summary to job output
+        run: cat "${RUNNER_TEMP}/advisory-code-review/review.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment pull-request summary
+        if: steps.context.outputs.pr_number != ''
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ steps.context.outputs.pr_number }}
+        with:
+          script: |
+            const fs = require('fs');
+            const prNumber = Number(process.env.PR_NUMBER);
+            const body = fs.readFileSync(`${process.env.RUNNER_TEMP}/advisory-code-review/review.md`, 'utf8');
+            const {owner, repo} = context.repo;
+            const comments = await github.paginate(github.rest.issues.listComments, {owner, repo, issue_number: prNumber});
+            const existing = comments.find(comment => comment.body && comment.body.includes('<!-- codex-advisory-review-v1 -->'));
+            if (existing) {
+              await github.rest.issues.updateComment({owner, repo, comment_id: existing.id, body});
+            } else {
+              await github.rest.issues.createComment({owner, repo, issue_number: prNumber, body});
+            }
+
+  advisory-review-fork-bypass:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+    steps:
+      - name: Fork pull-request bypass
+        run: echo "Advisory Codex review is skipped for fork pull requests because repository secrets are not exposed."

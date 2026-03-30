@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orcha-api
+  labels:
+    app: orcha-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orcha-api
+  template:
+    metadata:
+      annotations:
+        orcha.dev/secret-hash: "{{ secret_hash }}"
+      labels:
+        app: orcha-api
+    spec:
+      serviceAccountName: "{{ service_account_name }}"
+      containers:
+        - name: api
+          image: "{{ image }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: AGENT_CORE_RUNTIME_PROVIDER
+              value: "aks"
+            - name: AGENT_CORE_RUNTIME_PROVIDER_NAMESPACE
+              value: "{{ namespace }}"
+            - name: AGENT_CORE_REMOTE_EXECUTION_ROOT
+              value: "{{ remote_execution_root }}"
+          envFrom:
+            - secretRef:
+                name: "{{ secret_name }}"
+                optional: true
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          volumeMounts:
+            - name: git-files
+              mountPath: "{{ shared_git_mount_path }}"
+      volumes:
+        - name: git-files
+          persistentVolumeClaim:
+            claimName: "{{ shared_git_pvc_name }}"

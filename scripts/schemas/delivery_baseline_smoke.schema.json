@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-core.local/schemas/delivery-baseline-smoke.schema.json",
+  "title": "agent-core delivery baseline smoke",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "terraform_backend": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "env": { "type": "string" },
+        "location": { "type": "string" },
+        "resource_group": { "type": "string" },
+        "storage_account": { "type": "string" },
+        "container": { "type": "string" },
+        "state_key": { "type": "string" },
+        "workdir": { "type": "string" },
+        "backend_config": { "type": "string" }
+      },
+      "required": ["resource_group", "storage_account"]
+    },
+    "container_image": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "image": { "type": "string" },
+        "dockerfile": { "type": "string" },
+        "context": { "type": "string" },
+        "platform": { "type": "string" },
+        "builder_name": { "type": "string" },
+        "no_login": { "type": "boolean" },
+        "no_push": { "type": "boolean" }
+      },
+      "required": ["image", "dockerfile", "context"]
+    },
+    "aks_workload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "namespace": { "type": "string" },
+        "manifests": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "workload_name": { "type": "string" },
+        "rollout_kind": { "type": "string" },
+        "rollout_timeout": { "type": "string" },
+        "secret_name": { "type": "string" },
+        "secret_env_file": { "type": "string" },
+        "no_namespace_create": { "type": "boolean" },
+        "no_wait": { "type": "boolean" }
+      },
+      "required": ["namespace", "manifests", "workload_name"]
+    },
+    "apim": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resource_group": { "type": "string" },
+        "apim_name": { "type": "string" },
+        "api_id": { "type": "string" },
+        "api_path": { "type": "string" },
+        "openapi_path": { "type": "string" },
+        "service_url": { "type": "string" },
+        "service_name": { "type": "string" },
+        "namespace": { "type": "string" },
+        "aks_resource_group": { "type": "string" },
+        "aks_cluster_name": { "type": "string" },
+        "service_scheme": { "type": "string" }
+      },
+      "required": ["resource_group", "apim_name", "api_id", "openapi_path"]
+    },
+    "app_service": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_dir": { "type": "string" },
+        "include_files": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "zip_path": { "type": "string" },
+        "staging_dir": { "type": "string" },
+        "resource_group": { "type": "string" },
+        "app_name": { "type": "string" },
+        "hostname": { "type": "string" }
+      },
+      "required": ["source_dir", "include_files"]
+    },
+    "remote_smoke": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "app_url": { "type": "string" },
+        "api_url": { "type": "string" },
+        "strict": { "type": "boolean" }
+      }
+    }
+  }
+}

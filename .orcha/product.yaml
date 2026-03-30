@@ -1,0 +1,42 @@
+schema_version: 1
+product:
+  key: test-product
+  name: Test Product
+  org: primary
+  description: Test Product
+github:
+  owner: aegroup-io
+  repo: test-product
+  default_branch: dev
+  project_number: 14
+  status_field: Status
+  ready_status: Todo
+  done_status: Done
+baseline:
+  channel: stable
+  agent_core_version: 0.1.0
+  standards_pack: default
+  managed_assets:
+  - path: AGENTS.md
+    mode: managed
+  - path: .github/pull_request_template.md
+    mode: managed
+execution:
+  profile: standard-python
+  container_image: ghcr.io/aegroup/agent-core-runner:stable
+  max_concurrent_lanes: 4
+  workspace_strategy: branch-per-lane
+graph:
+  components_file: .orcha/components.yaml
+  auto_discover: true
+governance:
+  approval_posture: high-trust
+  repo_write_policy: high-trust
+  branch_creation_policy: high-trust
+  issue_edit_policy: high-trust
+  pr_edit_policy: high-trust
+  tool_use_policy: high-trust
+  network_use_policy: high-trust
+  require_human_merge: true
+  allow_agent_comments: true
+  allow_agent_issue_edits: true

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orcha-worker
+  labels:
+    app: orcha-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orcha-worker
+  template:
+    metadata:
+      annotations:
+        orcha.dev/secret-hash: "{{ secret_hash }}"
+      labels:
+        app: orcha-worker
+    spec:
+      serviceAccountName: "{{ service_account_name }}"
+      containers:
+        - name: worker
+          image: "{{ image }}"
+          imagePullPolicy: Always
+          env:
+            - name: AGENT_CORE_API_BASE_URL
+              value: "http://{{ api_service_name }}.{{ namespace }}.svc.cluster.local"
+            - name: AGENT_CORE_REMOTE_EXECUTION_ROOT
+              value: "{{ remote_execution_root }}"
+          envFrom:
+            - secretRef:
+                name: "{{ secret_name }}"
+                optional: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          volumeMounts:
+            - name: git-files
+              mountPath: "{{ shared_git_mount_path }}"
+      volumes:
+        - name: git-files
+          persistentVolumeClaim:
+            claimName: "{{ shared_git_pvc_name }}"

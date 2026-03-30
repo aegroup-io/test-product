@@ -1,0 +1,370 @@
+{
+  "schema_version": 1,
+  "product": {
+    "key": "orcha",
+    "name": "Orcha"
+  },
+  "core_version": "0.1.0",
+  "managed_files": [
+    {
+      "source": "factory/managed-repo/AGENTS.md",
+      "target": "AGENTS.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.agent-core/delivery-baseline-smoke.json",
+      "target": ".agent-core/delivery-baseline-smoke.json",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.agent-core/delivery-release-verification.json",
+      "target": ".agent-core/delivery-release-verification.json",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.github/pull_request_template.md",
+      "target": ".github/pull_request_template.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.github/ISSUE_TEMPLATE/feature.yml",
+      "target": ".github/ISSUE_TEMPLATE/feature.yml",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.github/ISSUE_TEMPLATE/spike.yml",
+      "target": ".github/ISSUE_TEMPLATE/spike.yml",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.github/ISSUE_TEMPLATE/api.yml",
+      "target": ".github/ISSUE_TEMPLATE/api.yml",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.github/workflows/repo-harness.yml",
+      "target": ".github/workflows/repo-harness.yml",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.github/workflows/advisory-code-review.yml",
+      "target": ".github/workflows/advisory-code-review.yml",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.github/workflows/delivery-baseline-smoke.yml",
+      "target": ".github/workflows/delivery-baseline-smoke.yml",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.github/workflows/delivery-release-verification.yml",
+      "target": ".github/workflows/delivery-release-verification.yml",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.github/workflows/merge-readiness.yml",
+      "target": ".github/workflows/merge-readiness.yml",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.github/workflows/remote-smoke.yml",
+      "target": ".github/workflows/remote-smoke.yml",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/ops/AGENTS.md",
+      "target": "docs/ops/AGENTS.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/ops/PROJECT_PLANNING.md",
+      "target": "docs/ops/PROJECT_PLANNING.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/architecture/README.md",
+      "target": "docs/architecture/README.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/architecture/platform-stack.md",
+      "target": "docs/architecture/platform-stack.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/delivery/README.md",
+      "target": "docs/delivery/README.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/delivery/aks-workload.md",
+      "target": "docs/delivery/aks-workload.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/delivery/apim-sync.md",
+      "target": "docs/delivery/apim-sync.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/delivery/app-service-zip.md",
+      "target": "docs/delivery/app-service-zip.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/delivery/container-image.md",
+      "target": "docs/delivery/container-image.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/delivery/delivery-baseline-smoke.md",
+      "target": "docs/delivery/delivery-baseline-smoke.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/delivery/delivery-release-verification.md",
+      "target": "docs/delivery/delivery-release-verification.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/delivery/remote-smoke.md",
+      "target": "docs/delivery/remote-smoke.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/delivery/terraform-backend.md",
+      "target": "docs/delivery/terraform-backend.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/delivery/terraform-entrypoint-validation.md",
+      "target": "docs/delivery/terraform-entrypoint-validation.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/harness/advisory-code-review.md",
+      "target": "docs/harness/advisory-code-review.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/harness/merge-readiness.md",
+      "target": "docs/harness/merge-readiness.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/harness/README.md",
+      "target": "docs/harness/README.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/harness/github-repo-bootstrap.md",
+      "target": "docs/harness/github-repo-bootstrap.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/harness/local-development.md",
+      "target": "docs/harness/local-development.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/harness/worktree-bootstrap.md",
+      "target": "docs/harness/worktree-bootstrap.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/harness/repo-harness.md",
+      "target": "docs/harness/repo-harness.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/planning/README.md",
+      "target": "docs/planning/README.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/agents/security/zap-security-reviewer.md",
+      "target": "docs/agents/security/zap-security-reviewer.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/bootstrap_terraform_backend.sh",
+      "target": "scripts/bootstrap_terraform_backend.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/bootstrap_local_namespace.py",
+      "target": "scripts/bootstrap_local_namespace.py",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/build_push_container_image.sh",
+      "target": "scripts/build_push_container_image.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/deploy_aks_workload.sh",
+      "target": "scripts/deploy_aks_workload.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/sync_apim_api.sh",
+      "target": "scripts/sync_apim_api.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/deploy_app_service_zip.sh",
+      "target": "scripts/deploy_app_service_zip.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/validate_terraform_entrypoint.sh",
+      "target": "scripts/validate_terraform_entrypoint.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/run_advisory_code_review.py",
+      "target": "scripts/run_advisory_code_review.py",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/run_delivery_baseline_smoke.py",
+      "target": "scripts/run_delivery_baseline_smoke.py",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/run_delivery_release_verification.py",
+      "target": "scripts/run_delivery_release_verification.py",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/run_merge_readiness_audit.py",
+      "target": "scripts/run_merge_readiness_audit.py",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/local_namespace.sh",
+      "target": "scripts/local_namespace.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/smoke_remote.sh",
+      "target": "scripts/smoke_remote.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/schemas/advisory_code_review.schema.json",
+      "target": "scripts/schemas/advisory_code_review.schema.json",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/schemas/delivery_baseline_smoke.schema.json",
+      "target": "scripts/schemas/delivery_baseline_smoke.schema.json",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/schemas/delivery_release_verification.schema.json",
+      "target": "scripts/schemas/delivery_release_verification.schema.json",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/smoke_local.sh",
+      "target": "scripts/smoke_local.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/start_local_api.sh",
+      "target": "scripts/start_local_api.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/start_local_web.sh",
+      "target": "scripts/start_local_web.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/start_local_worker.sh",
+      "target": "scripts/start_local_worker.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/start_local_mcp.sh",
+      "target": "scripts/start_local_mcp.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/start_local_docs.sh",
+      "target": "scripts/start_local_docs.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/stop_local_environment.sh",
+      "target": "scripts/stop_local_environment.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/validate_repo_harness_assets.py",
+      "target": "scripts/validate_repo_harness_assets.py",
+      "mode": "replace"
+    }
+  ],
+  "enabled_delivery_modules": [
+    {
+      "name": "delivery-baseline-smoke",
+      "version": "0.1.0",
+      "source": "factory/managed-repo",
+      "required": true
+    },
+    {
+      "name": "delivery-release-verification",
+      "version": "0.1.0",
+      "source": "factory/managed-repo",
+      "required": true
+    }
+  ],
+  "enabled_runtime_modules": [
+    {
+      "name": "platform-api",
+      "version": "0.1.0",
+      "source": "starter-stack",
+      "required": true
+    },
+    {
+      "name": "platform-worker",
+      "version": "0.1.0",
+      "source": "starter-stack",
+      "required": true
+    },
+    {
+      "name": "web-shell",
+      "version": "0.1.0",
+      "source": "starter-stack",
+      "required": true
+    },
+    {
+      "name": "starter-api",
+      "version": "0.1.0",
+      "source": "starter-stack",
+      "required": true
+    },
+    {
+      "name": "starter-web",
+      "version": "0.1.0",
+      "source": "starter-stack",
+      "required": true
+    },
+    {
+      "name": "starter-mcp",
+      "version": "0.1.0",
+      "source": "starter-stack",
+      "required": true
+    },
+    {
+      "name": "starter-worker",
+      "version": "0.1.0",
+      "source": "starter-stack",
+      "required": true
+    }
+  ],
+  "local_overrides": [],
+  "notes": "Starter product manifest for generic baseline repo seeding."
+}

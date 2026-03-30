@@ -1,0 +1,5 @@
+APP_NAME = "Orcha API"
+DATABASE_URL = "postgresql+psycopg://postgres:postgres@127.0.0.1:5432/orcha"
+CRYPTO_SEED = "orcha-local-dev"
+INITIAL_ORG_NAME = "Primary"
+INITIAL_ORG_SLUG = "primary"

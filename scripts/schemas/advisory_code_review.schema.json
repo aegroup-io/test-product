@@ -1,0 +1,77 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "result",
+    "summary",
+    "validation_assessment",
+    "residual_risks",
+    "findings"
+  ],
+  "properties": {
+    "result": {
+      "type": "string",
+      "enum": ["findings", "no-findings", "review-unavailable"]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "validation_assessment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "residual_risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "severity",
+          "title",
+          "risk",
+          "recommendation",
+          "evidence",
+          "file",
+          "line"
+        ],
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["high", "medium", "low"]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "risk": {
+            "type": "string",
+            "minLength": 1
+          },
+          "recommendation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "file": {
+            "type": "string",
+            "minLength": 1
+          },
+          "line": {
+            "type": ["integer", "null"],
+            "minimum": 1
+          }
+        }
+      }
+    }
+  }
+}

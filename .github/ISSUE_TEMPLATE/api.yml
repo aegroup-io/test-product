@@ -1,0 +1,99 @@
+name: API Change
+description: Define or modify API behavior with explicit contract and compatibility notes.
+title: "[API] "
+labels:
+  - "type:feature"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Be explicit about endpoints, authz, error shapes, and compatibility expectations.
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What capability does the API provide after this ships? (1-2 sentences)
+    validations:
+      required: true
+
+  - type: textarea
+    id: endpoints
+    attributes:
+      label: Endpoints (method + path)
+      description: Include authn and authz notes per endpoint.
+      placeholder: |
+        - GET /v1/... (auth: ...)
+        - POST /v1/... (auth: ...)
+    validations:
+      required: true
+
+  - type: textarea
+    id: request_response
+    attributes:
+      label: Request / response contract
+      description: Shapes, required and optional fields, and any defaults.
+      placeholder: |
+        Request:
+        - ...
+
+        Response:
+        - ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: errors
+    attributes:
+      label: Errors and status codes
+      description: What errors can occur, and how are they represented?
+      placeholder: |
+        - 400: ...
+        - 401: ...
+        - 403: ...
+        - 404: ...
+        - 409: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility / rollout notes
+      description: Backward compatibility, rollout constraints, and deprecation notes.
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      placeholder: |
+        - Given ..., when ..., then ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: demo_test_plan
+    attributes:
+      label: Demo / test plan
+      description: Example curl, automated tests, or operator flows and expected results.
+      placeholder: |
+        curl ... -> expect 200 with ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies_questions
+    attributes:
+      label: Dependencies / open questions
+      placeholder: |
+        - Depends on: #...
+        - Open question: ...
+
+  - type: textarea
+    id: agent_brief
+    attributes:
+      label: Agent brief (optional)
+      placeholder: |
+        Target areas: api/
+        Constraints: ...
+        Success looks like: ...

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "product": {
+    "key": "orcha",
+    "name": "Orcha"
+  },
+  "platform_seed": {
+    "initial_org_name": "Primary",
+    "initial_org_slug": "primary"
+  },
+  "branding": {
+    "app_title": "Orcha",
+    "app_kicker": "Runtime core baseline",
+    "api_title": "Orcha API"
+  },
+  "public_assets": {
+    "light_logo_path": "/logo-light.svg",
+    "dark_logo_path": "/logo-dark.svg",
+    "favicon_path": "/favicon.svg"
+  },
+  "runtime_wrappers": {
+    "api_module": "orcha_api",
+    "worker_module": "orcha_worker",
+    "mcp_module": "orcha_mcp",
+    "api_package_name": "orcha-api",
+    "worker_package_name": "orcha-worker",
+    "mcp_package_name": "orcha-mcp",
+    "web_package_name": "orcha-web",
+    "database_url": "postgresql+psycopg://postgres:postgres@127.0.0.1:5432/orcha",
+    "crypto_seed": "orcha-local-dev"
+  }
+}

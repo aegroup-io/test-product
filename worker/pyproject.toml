@@ -1,0 +1,26 @@
+[project]
+name = "orcha-worker"
+version = "0.1.0"
+description = "Worker baseline service for Orcha"
+requires-python = ">=3.11"
+dependencies = [
+  "agent-core-platform-worker",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=9.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.uv.sources]
+agent-core-platform-worker = { path = "../packages/platform-worker", editable = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

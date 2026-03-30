@@ -1,0 +1,137 @@
+name: Merge Readiness
+
+on:
+  pull_request:
+    branches: ["dev"]
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+  workflow_run:
+    workflows: ["Repo Harness", "Advisory Code Review"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number to audit
+        required: true
+        type: number
+
+permissions:
+  checks: read
+  contents: read
+  issues: read
+  pull-requests: write
+
+jobs:
+  merge-readiness:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_run' || github.event.pull_request.head.repo.full_name == github.repository
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Resolve PR context
+        id: context
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
+          event_name = os.environ["GITHUB_EVENT_NAME"]
+          repo = os.environ["GITHUB_REPOSITORY"]
+          pr_number = ""
+          same_repo = "false"
+
+          if event_name in {"pull_request", "pull_request_review"}:
+              pr = event["pull_request"]
+              pr_number = str(pr["number"])
+              same_repo = "true" if pr["head"]["repo"]["full_name"] == repo else "false"
+          elif event_name == "workflow_run":
+              pull_requests = event["workflow_run"].get("pull_requests") or []
+              if pull_requests:
+                  pr_number = str(pull_requests[0]["number"])
+              head_repo = ((event["workflow_run"].get("head_repository") or {}).get("full_name") or "")
+              same_repo = "true" if head_repo == repo else "false"
+          else:
+              pr_number = str(event["inputs"]["pr_number"])
+              same_repo = "true"
+
+          output_path = Path(os.environ["GITHUB_OUTPUT"])
+          with output_path.open("a", encoding="utf-8") as handle:
+              handle.write(f"pr_number={pr_number}\n")
+              handle.write(f"same_repo={same_repo}\n")
+          PY
+
+      - uses: actions/checkout@v4
+        if: steps.context.outputs.pr_number != ''
+
+      - uses: actions/setup-python@v5
+        if: steps.context.outputs.pr_number != ''
+        with:
+          python-version: "3.11"
+
+      - name: Run merge readiness audit
+        if: steps.context.outputs.pr_number != '' && steps.context.outputs.same_repo == 'true'
+        run: |
+          python3 scripts/run_merge_readiness_audit.py \
+            --pr-number "${{ steps.context.outputs.pr_number }}" \
+            --output-dir "${RUNNER_TEMP}/merge-readiness"
+
+      - name: Write fork bypass readiness report
+        if: steps.context.outputs.pr_number != '' && steps.context.outputs.same_repo != 'true'
+        run: |
+          mkdir -p "${RUNNER_TEMP}/merge-readiness"
+          cat > "${RUNNER_TEMP}/merge-readiness/readiness.md" <<'EOF'
+          <!-- merge-readiness-audit-v1 -->
+          ## Merge Readiness
+
+          ### Result
+
+          **READY WITH RISKS**. Merge readiness falls back to direct human review for fork PRs.
+
+          ### Risks
+
+          - Fork PRs do not run the repo-local readiness auditor.
+          EOF
+          cat > "${RUNNER_TEMP}/merge-readiness/readiness.json" <<'EOF'
+          {"result":"ready-with-risks","summary":"Fork PR readiness falls back to direct human review.","blockers":[],"risks":["Fork PRs do not run the repo-local readiness auditor."],"notes":[]}
+          EOF
+
+      - name: Upload merge readiness artifacts
+        if: steps.context.outputs.pr_number != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: merge-readiness
+          retention-days: 14
+          path: ${{ runner.temp }}/merge-readiness
+
+      - name: Add readiness summary to job output
+        if: steps.context.outputs.pr_number != ''
+        run: cat "${RUNNER_TEMP}/merge-readiness/readiness.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment PR summary
+        if: steps.context.outputs.pr_number != ''
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ steps.context.outputs.pr_number }}
+        with:
+          script: |
+            const fs = require('fs');
+            const prNumber = Number(process.env.PR_NUMBER);
+            const body = fs.readFileSync(`${process.env.RUNNER_TEMP}/merge-readiness/readiness.md`, 'utf8');
+            const {owner, repo} = context.repo;
+            const comments = await github.paginate(github.rest.issues.listComments, {owner, repo, issue_number: prNumber});
+            const existing = comments.find(comment => comment.body && comment.body.includes('<!-- merge-readiness-audit-v1 -->'));
+            if (existing) {
+              await github.rest.issues.updateComment({owner, repo, comment_id: existing.id, body});
+            } else {
+              await github.rest.issues.createComment({owner, repo, issue_number: prNumber, body});
+            }
+
+  merge-readiness-fork-bypass:
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'pull_request' || github.event_name == 'pull_request_review') && github.event.pull_request.head.repo.full_name != github.repository
+    steps:
+      - name: Fork PR bypass
+        run: echo "Merge readiness audit defers to direct human review for fork PRs."

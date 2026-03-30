@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-core.local/schemas/delivery-release-verification.schema.json",
+  "title": "agent-core delivery release verification",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "release_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "delivery_smoke_config": {
+      "type": "string",
+      "minLength": 1
+    },
+    "output_dir": {
+      "type": "string",
+      "minLength": 1
+    },
+    "run_local_harness": {
+      "type": "boolean"
+    },
+    "run_delivery_smoke": {
+      "type": "boolean"
+    },
+    "required_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "required": ["release_id"]
+}

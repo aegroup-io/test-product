@@ -1,0 +1,57 @@
+name: Spike
+description: Answer a specific question and produce a decision plus follow-up work.
+title: "[Spike] "
+labels:
+  - "type:spike"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Spikes are for learning and decision-making. The output should be a short artifact and clear next actions.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question to answer
+      placeholder: |
+        What do we need to learn or decide?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: timebox
+    attributes:
+      label: Timebox
+      options:
+        - 2 hours
+        - 4 hours
+        - 1 day
+        - 2 days
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Required output artifact
+      description: What must exist so others can proceed?
+      placeholder: |
+        - Short doc (where?): ...
+        - Recommendation or decision: ...
+        - Follow-up issues created: yes/no
+    validations:
+      required: true
+
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision needed at the end
+      placeholder: |
+        - Choose A or B, with rationale.
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes_constraints
+    attributes:
+      label: Notes / constraints (optional)

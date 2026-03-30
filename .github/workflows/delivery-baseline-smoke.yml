@@ -1,0 +1,21 @@
+name: Delivery Baseline Smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: ${{ hashFiles('.agent-core/delivery-baseline-smoke.json') != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run delivery baseline smoke
+        run: python3 scripts/run_delivery_baseline_smoke.py

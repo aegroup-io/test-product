@@ -1,0 +1,39 @@
+name: Remote Smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_url:
+        description: Primary app URL to probe
+        required: false
+        type: string
+      api_url:
+        description: API base URL to probe
+        required: false
+        type: string
+      strict:
+        description: Fail when targets are missing or unreachable
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  remote-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run remote smoke probes
+        env:
+          REMOTE_APP_URL: ${{ inputs.app_url }}
+          REMOTE_API_URL: ${{ inputs.api_url }}
+        run: |
+          set -euo pipefail
+          args=()
+          if [ "${{ inputs.strict }}" = "true" ]; then
+            args+=("--strict")
+          fi
+          bash scripts/smoke_remote.sh "${args[@]}"
