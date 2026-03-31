@@ -2184,6 +2184,7 @@ describe("App", () => {
     expect(screen.getByRole("link", { name: "Fleet" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Products" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Baselines" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Some More" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Settings" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Theme" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Help" })).toBeInTheDocument();
@@ -2228,9 +2229,7 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: "Primary" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Add Repository" })).toBeInTheDocument();
     expect(screen.getByText("Connected repositories")).toBeInTheDocument();
-    expect(
-      screen.getByText((_, node) => node?.textContent?.replace(/\s+/g, " ").trim() === "aegroup-io/atlas"),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/aegroup-io\/atlas/)).toBeInTheDocument();
     expect(screen.getByText("Orgs: Primary")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Git Repositories" })).toHaveAttribute("href", "/settings/git-repos");
   });
@@ -3193,6 +3192,21 @@ describe("App", () => {
     expect(screen.getByRole("link", { name: "Review baselines" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Open settings" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Rerun contract refresh" })).toHaveClass("w-full", "max-w-[200px]", "justify-start");
+  });
+
+  it("renders Some More with Barrick and Ford plus a 1-year stock chart", async () => {
+    renderApp(["/some-more/ford"]);
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Some More" })).toBeInTheDocument();
+    });
+
+    expect(screen.getByRole("link", { name: "Some More" })).toHaveAttribute("href", "/some-more");
+    expect(screen.getByRole("link", { name: "Barrick B • NYSE" })).toHaveAttribute("href", "/some-more/barrick");
+    expect(screen.getByRole("link", { name: "Ford F • NYSE" })).toHaveAttribute("href", "/some-more/ford");
+    expect(screen.getAllByText("Ford Motor Company").length).toBeGreaterThan(0);
+    expect(screen.getByText("One-year checkpoints")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "F 1 year stock chart" })).toBeInTheDocument();
   });
 
   it("renders baseline and graph routes with drift and topology context", async () => {

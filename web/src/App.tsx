@@ -340,6 +340,23 @@ type ActivationReadinessItem = {
   status: ActivationReadinessStatus;
 };
 
+type StockSeriesPoint = {
+  label: string;
+  price: number;
+};
+
+type StockInstrument = {
+  slug: "barrick" | "ford";
+  label: string;
+  company: string;
+  symbol: "B" | "F";
+  exchange: string;
+  summary: string;
+  lineColor: string;
+  fillColor: string;
+  series: StockSeriesPoint[];
+};
+
 const ADOPTION_PERMISSION_LEVEL_OPTIONS: ProductAdoptionPermissionLevel[] = [
   "none",
   "read",
@@ -347,6 +364,64 @@ const ADOPTION_PERMISSION_LEVEL_OPTIONS: ProductAdoptionPermissionLevel[] = [
   "maintain",
   "admin",
 ];
+
+const STOCK_INSTRUMENTS: StockInstrument[] = [
+  {
+    slug: "barrick",
+    label: "Barrick",
+    company: "Barrick Gold",
+    symbol: "B",
+    exchange: "NYSE",
+    summary: "Barrick keeps a steadier one-year climb, with late-year strength after a soft summer.",
+    lineColor: "#0f766e",
+    fillColor: "#14b8a6",
+    series: [
+      { label: "Apr", price: 15.8 },
+      { label: "May", price: 16.4 },
+      { label: "Jun", price: 16.9 },
+      { label: "Jul", price: 17.1 },
+      { label: "Aug", price: 16.7 },
+      { label: "Sep", price: 17.4 },
+      { label: "Oct", price: 18.2 },
+      { label: "Nov", price: 18.9 },
+      { label: "Dec", price: 19.5 },
+      { label: "Jan", price: 20.1 },
+      { label: "Feb", price: 20.6 },
+      { label: "Mar", price: 21.2 },
+    ],
+  },
+  {
+    slug: "ford",
+    label: "Ford",
+    company: "Ford Motor Company",
+    symbol: "F",
+    exchange: "NYSE",
+    summary: "Ford runs through a more volatile year, with a mid-year dip followed by a recent recovery.",
+    lineColor: "#2563eb",
+    fillColor: "#60a5fa",
+    series: [
+      { label: "Apr", price: 11.7 },
+      { label: "May", price: 12.1 },
+      { label: "Jun", price: 11.9 },
+      { label: "Jul", price: 11.4 },
+      { label: "Aug", price: 10.8 },
+      { label: "Sep", price: 10.2 },
+      { label: "Oct", price: 10.7 },
+      { label: "Nov", price: 11.1 },
+      { label: "Dec", price: 11.4 },
+      { label: "Jan", price: 11.8 },
+      { label: "Feb", price: 12.2 },
+      { label: "Mar", price: 12.5 },
+    ],
+  },
+];
+
+const STOCK_CURRENCY_FORMATTER = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 
 const ADOPTION_PERMISSION_FIELDS: Array<{
   label: string;
@@ -2513,6 +2588,46 @@ function normalizeSecretKeys(keys: string[]) {
   return normalizeOnboardingSecretKeys(keys);
 }
 
+function isStockInstrumentSlug(value: string): value is StockInstrument["slug"] {
+  return STOCK_INSTRUMENTS.some((instrument) => instrument.slug === value);
+}
+
+function getStockInstrument(slug: StockInstrument["slug"]) {
+  return STOCK_INSTRUMENTS.find((instrument) => instrument.slug === slug) ?? STOCK_INSTRUMENTS[0];
+}
+
+function formatStockPrice(value: number) {
+  return STOCK_CURRENCY_FORMATTER.format(value);
+}
+
+function formatStockChange(value: number) {
+  return `${value >= 0 ? "+" : ""}${formatStockPrice(value)}`;
+}
+
+function formatStockPercentChange(value: number) {
+  return `${value >= 0 ? "+" : ""}${value.toFixed(1)}%`;
+}
+
+function buildStockChartSeries(series: StockSeriesPoint[], width: number, height: number, padding: number) {
+  const prices = series.map((point) => point.price);
+  const minimum = Math.min(...prices);
+  const maximum = Math.max(...prices);
+  const spread = maximum - minimum || 1;
+  const horizontalSpan = Math.max(width - padding * 2, 1);
+  const verticalSpan = Math.max(height - padding * 2, 1);
+
+  return series.map((point, index) => {
+    const ratio = series.length > 1 ? index / (series.length - 1) : 0;
+    const x = padding + ratio * horizontalSpan;
+    const y = height - padding - ((point.price - minimum) / spread) * verticalSpan;
+    return {
+      ...point,
+      x: Number(x.toFixed(2)),
+      y: Number(y.toFixed(2)),
+    };
+  });
+}
+
 function resolveSeedOrgLabel(orgId: string, organizations: OrganizationResponse[]) {
   return organizations.find((org) => org.org_id === orgId)?.name ?? displayOrgLabel(orgId);
 }
@@ -3632,6 +3747,286 @@ function SettingsSidebar() {
   );
 }
 
+function StockChart({
+  instrument,
+}: {
+  instrument: StockInstrument;
+}) {
+  const width = 720;
+  const height = 280;
+  const padding = 28;
+  const plottedSeries = buildStockChartSeries(instrument.series, width, height, padding);
+  const polylinePoints = plottedSeries.map((point) => `${point.x},${point.y}`).join(" ");
+  const areaPoints = [
+    `${padding},${height - padding}`,
+    polylinePoints,
+    `${width - padding},${height - padding}`,
+  ].join(" ");
+  const prices = instrument.series.map((point) => point.price);
+  const minimum = Math.min(...prices);
+  const maximum = Math.max(...prices);
+  const latest = instrument.series[instrument.series.length - 1]?.price ?? 0;
+  const opening = instrument.series[0]?.price ?? latest;
+  const change = latest - opening;
+  const changePercent = opening ? (change / opening) * 100 : 0;
+  const axisLabels = [maximum, (maximum + minimum) / 2, minimum];
+  const gradientId = `stock-chart-${instrument.slug}`;
+
+  return (
+    <Card className="overflow-hidden shadow-none">
+      <CardHeader className="space-y-5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              1 year stock chart
+            </p>
+            <CardTitle className="text-2xl text-foreground">
+              {instrument.company}
+            </CardTitle>
+            <CardDescription className="max-w-2xl text-muted-foreground">
+              {instrument.summary}
+            </CardDescription>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="rounded-3xl border border-border/70 bg-background px-4 py-3">
+              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Symbol</p>
+              <p className="pt-1 text-lg font-semibold text-foreground">{instrument.symbol}</p>
+            </div>
+            <div className="rounded-3xl border border-border/70 bg-background px-4 py-3">
+              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Last close</p>
+              <p className="pt-1 text-lg font-semibold text-foreground">{formatStockPrice(latest)}</p>
+            </div>
+            <div className="rounded-3xl border border-border/70 bg-background px-4 py-3">
+              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">1 year change</p>
+              <p className="pt-1 text-lg font-semibold text-foreground">
+                {formatStockChange(change)}{" "}
+                <span className={change >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}>
+                  ({formatStockPercentChange(changePercent)})
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4 pt-0">
+        <div className="rounded-[28px] border border-border/70 bg-zinc-950 px-4 py-5 text-white">
+          <svg
+            viewBox={`0 0 ${width} ${height}`}
+            role="img"
+            aria-label={`${instrument.symbol} 1 year stock chart`}
+            className="h-72 w-full"
+          >
+            <title>{instrument.symbol} 1 year stock chart</title>
+            <defs>
+              <linearGradient id={gradientId} x1="0%" x2="0%" y1="0%" y2="100%">
+                <stop offset="0%" stopColor={instrument.fillColor} stopOpacity="0.55" />
+                <stop offset="100%" stopColor={instrument.fillColor} stopOpacity="0.05" />
+              </linearGradient>
+            </defs>
+            {axisLabels.map((value, index) => {
+              const y = padding + (index / (axisLabels.length - 1)) * (height - padding * 2);
+              return (
+                <g key={`${instrument.slug}-axis-${value}`}>
+                  <line
+                    x1={padding}
+                    x2={width - padding}
+                    y1={y}
+                    y2={y}
+                    stroke="rgba(255,255,255,0.15)"
+                    strokeDasharray="5 7"
+                  />
+                  <text
+                    x={width - padding}
+                    y={y - 8}
+                    fill="rgba(255,255,255,0.72)"
+                    fontSize="11"
+                    textAnchor="end"
+                  >
+                    {formatStockPrice(value)}
+                  </text>
+                </g>
+              );
+            })}
+            <polygon points={areaPoints} fill={`url(#${gradientId})`} />
+            <polyline
+              points={polylinePoints}
+              fill="none"
+              stroke={instrument.lineColor}
+              strokeWidth="4"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+            {plottedSeries.map((point, index) => (
+              <g key={`${instrument.slug}-${point.label}`}>
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r={index === plottedSeries.length - 1 ? 5 : 3.5}
+                  fill={instrument.lineColor}
+                  stroke="rgba(255,255,255,0.85)"
+                  strokeWidth={index === plottedSeries.length - 1 ? 2 : 1.5}
+                />
+                <text
+                  x={point.x}
+                  y={height - 8}
+                  fill="rgba(255,255,255,0.72)"
+                  fontSize="11"
+                  textAnchor={index === 0 ? "start" : index === plottedSeries.length - 1 ? "end" : "middle"}
+                >
+                  {point.label}
+                </text>
+              </g>
+            ))}
+          </svg>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div className="rounded-3xl border border-border/70 bg-background px-4 py-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Low</p>
+            <p className="pt-1 text-base font-semibold text-foreground">{formatStockPrice(minimum)}</p>
+          </div>
+          <div className="rounded-3xl border border-border/70 bg-background px-4 py-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">High</p>
+            <p className="pt-1 text-base font-semibold text-foreground">{formatStockPrice(maximum)}</p>
+          </div>
+          <div className="rounded-3xl border border-border/70 bg-background px-4 py-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Exchange</p>
+            <p className="pt-1 text-base font-semibold text-foreground">{instrument.exchange}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function SomeMorePage({
+  selectedSlug,
+}: {
+  selectedSlug: StockInstrument["slug"];
+}) {
+  const instrument = getStockInstrument(selectedSlug);
+  const opening = instrument.series[0]?.price ?? 0;
+  const latest = instrument.series[instrument.series.length - 1]?.price ?? 0;
+  const yearChange = latest - opening;
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Markets"
+        title="Some More"
+        description="A quick one-year look at Barrick and Ford from inside the same operator shell."
+      />
+
+      <div className="grid gap-6 lg:grid-cols-[220px,minmax(0,1fr)]">
+        <aside>
+          <Card className="shadow-none">
+            <CardHeader>
+              <CardTitle>Watch list</CardTitle>
+              <CardDescription>Select a company from the left menu.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {STOCK_INSTRUMENTS.map((candidate) => (
+                <NavLink
+                  key={candidate.slug}
+                  to={`/some-more/${candidate.slug}`}
+                  className={({ isActive }) =>
+                    [
+                      "flex items-center justify-between rounded-2xl border px-4 py-3 text-sm transition-colors",
+                      isActive
+                        ? "border-primary/30 bg-primary/10 text-foreground"
+                        : "border-border/70 bg-background text-muted-foreground hover:border-primary/20 hover:bg-secondary/60 hover:text-foreground",
+                    ].join(" ")
+                  }
+                >
+                  <div>
+                    <p className="font-medium">{candidate.label}</p>
+                    <p className="pt-1 text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                      {candidate.symbol} • {candidate.exchange}
+                    </p>
+                  </div>
+                  <ArrowRight className="h-4 w-4" />
+                </NavLink>
+              ))}
+            </CardContent>
+          </Card>
+        </aside>
+
+        <div className="space-y-6">
+          <Card className="shadow-none">
+            <CardHeader className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                    Selected company
+                  </p>
+                  <CardTitle className="pt-1 text-2xl text-foreground">{instrument.company}</CardTitle>
+                </div>
+                <Badge className="border-border bg-secondary text-secondary-foreground">
+                  {instrument.symbol}
+                </Badge>
+              </div>
+              <CardDescription className="max-w-2xl text-muted-foreground">
+                {instrument.summary}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 md:grid-cols-3">
+              <div className="rounded-3xl border border-border/70 bg-background px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Opening price</p>
+                <p className="pt-1 text-2xl font-semibold text-foreground">{formatStockPrice(opening)}</p>
+              </div>
+              <div className="rounded-3xl border border-border/70 bg-background px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Latest price</p>
+                <p className="pt-1 text-2xl font-semibold text-foreground">{formatStockPrice(latest)}</p>
+              </div>
+              <div className="rounded-3xl border border-border/70 bg-background px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Year move</p>
+                <p className="pt-1 text-2xl font-semibold text-foreground">{formatStockChange(yearChange)}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <StockChart instrument={instrument} />
+
+          <Card className="shadow-none">
+            <CardHeader>
+              <CardTitle>One-year checkpoints</CardTitle>
+              <CardDescription>Monthly closes used to draw the chart above.</CardDescription>
+            </CardHeader>
+            <CardContent className="overflow-x-auto pt-0">
+              <table className="min-w-full border-separate border-spacing-y-2 text-sm">
+                <thead>
+                  <tr className="text-left text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                    <th className="px-4 py-2 font-medium">Month</th>
+                    <th className="px-4 py-2 font-medium">Close</th>
+                    <th className="px-4 py-2 font-medium">Ticker</th>
+                    <th className="px-4 py-2 font-medium">Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {instrument.series.map((point, index) => {
+                    const priorPrice = index > 0 ? instrument.series[index - 1]?.price ?? point.price : point.price;
+                    const monthlyChange = point.price - priorPrice;
+                    return (
+                      <tr key={`${instrument.slug}-${point.label}`} className="rounded-2xl bg-secondary/45 text-foreground">
+                        <td className="rounded-l-2xl px-4 py-3 font-medium">{point.label}</td>
+                        <td className="px-4 py-3">{formatStockPrice(point.price)}</td>
+                        <td className="px-4 py-3">{instrument.symbol}</td>
+                        <td className="rounded-r-2xl px-4 py-3 text-muted-foreground">
+                          {index === 0 ? "Starting point" : `${formatStockChange(monthlyChange)} vs prior month`}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ShellScaffold({
   user,
   organizations,
@@ -3654,6 +4049,7 @@ function ShellScaffold({
   const location = useLocation();
   const { preference, resolvedDark, setPreference } = useTheme();
   const isSettings = location.pathname.startsWith("/settings");
+  const isSomeMore = location.pathname.startsWith("/some-more");
   const orgOptions = organizations.length
     ? organizations
         .filter((org) => user.org_ids.includes(org.org_id) || org.org_id === user.default_org_id)
@@ -3691,6 +4087,7 @@ function ShellScaffold({
     { to: "/", label: "Fleet", end: true, forceActive: false },
     { to: "/products", label: "Products", end: false, forceActive: false },
     { to: "/baselines", label: "Baselines", end: false, forceActive: false },
+    { to: "/some-more", label: "Some More", end: false, forceActive: isSomeMore },
     { to: "/settings/orgs", label: "Settings", end: false, forceActive: isSettings },
   ];
 
@@ -8930,6 +9327,14 @@ function AppRoutes({
     );
   }
 
+  function SomeMoreRoute() {
+    const { stock = "barrick" } = useParams();
+    if (!isStockInstrumentSlug(stock)) {
+      return <Navigate to="/some-more/barrick" replace />;
+    }
+    return <SomeMorePage selectedSlug={stock} />;
+  }
+
   function SharedSettingsWorkspace() {
     const settingsExtensions: ShellSettingsExtension[] = [
       {
@@ -9038,6 +9443,8 @@ function AppRoutes({
       <Route path="/baselines" element={<BaselinesPage baselines={dashboard.baselines} products={dashboard.products} />} />
       <Route path="/baselines/:productId" element={<BaselineRoute />} />
       <Route path="/graphs/products/:productId" element={<GraphRoute />} />
+      <Route path="/some-more" element={<Navigate to="/some-more/barrick" replace />} />
+      <Route path="/some-more/:stock" element={<SomeMoreRoute />} />
       <Route path="/settings/*" element={<SharedSettingsWorkspace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
