@@ -111,6 +111,10 @@ const PAUSE_BUTTON_CLASS =
   "border border-amber-500/60 bg-amber-300 text-zinc-950 hover:bg-amber-200 disabled:!opacity-100 disabled:!bg-amber-300 disabled:!text-zinc-950";
 const RESUME_BUTTON_CLASS =
   "border border-emerald-600/40 bg-emerald-600 text-white hover:bg-emerald-500 disabled:!opacity-100 disabled:!bg-emerald-600 disabled:!text-white";
+const STOCK_MENU_ITEMS = [
+  { id: "barrick", label: "Barrick", symbol: "NYSE:B", company: "Barrick Gold" },
+  { id: "ford", label: "Ford", symbol: "NYSE:F", company: "Ford Motor Co." },
+] as const;
 
 type DashboardState = {
   products: ProductSummaryResponse[];
@@ -3589,6 +3593,25 @@ const HeaderIconButton = forwardRef<
 
 HeaderIconButton.displayName = "HeaderIconButton";
 
+function buildTradingViewChartUrl(symbol: string, darkMode: boolean) {
+  const params = new URLSearchParams({
+    symbol,
+    interval: "D",
+    range: "12M",
+    hide_top_toolbar: "1",
+    hide_legend: "1",
+    saveimage: "0",
+    hide_side_toolbar: "1",
+    theme: darkMode ? "dark" : "light",
+    style: "1",
+    timezone: "Etc/UTC",
+    withdateranges: "1",
+    hide_volume: "1",
+    allow_symbol_change: "0",
+  });
+  return `https://s.tradingview.com/widgetembed/?${params.toString()}`;
+}
+
 function SettingsSidebar() {
   const items = [
     { to: "/settings/orgs", label: "Organizations", icon: Building2 },
@@ -3629,6 +3652,86 @@ function SettingsSidebar() {
         })}
       </nav>
     </aside>
+  );
+}
+
+function SomeMorePage() {
+  const { stockId } = useParams();
+  const { resolvedDark } = useTheme();
+  const selectedId = STOCK_MENU_ITEMS.some((item) => item.id === stockId) ? stockId : STOCK_MENU_ITEMS[0].id;
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[220px,1fr]">
+      <aside className="h-fit rounded-3xl border border-border/70 bg-card shadow-sm">
+        <div className="border-b border-border/70 px-5 py-4">
+          <h2 className="text-sm font-semibold tracking-[0.08em] text-muted-foreground uppercase">Some More</h2>
+        </div>
+        <nav aria-label="Stocks" className="space-y-1 p-3">
+          {STOCK_MENU_ITEMS.map((item) => (
+            <NavLink
+              key={item.id}
+              to={`/some-more/${item.id}`}
+              className={({ isActive }) =>
+                [
+                  "flex items-center justify-between rounded-2xl px-3 py-2 text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                    : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800",
+                ].join(" ")
+              }
+            >
+              <span>{item.label}</span>
+              <span className="text-xs opacity-80">{item.symbol.replace("NYSE:", "")}</span>
+            </NavLink>
+          ))}
+        </nav>
+      </aside>
+
+      <Card className="shadow-none">
+        <CardHeader className="space-y-3">
+          <div>
+            <CardTitle className="text-foreground">1 year stock charts</CardTitle>
+            <CardDescription className="text-muted-foreground">
+              Barrick (B) and Ford (F) with a one-year daily view.
+            </CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto rounded-2xl border border-border/70">
+            <table className="min-w-[760px] w-full border-collapse text-sm">
+              <thead className="bg-muted/40 text-left text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-3 font-medium">Company</th>
+                  <th className="px-4 py-3 font-medium">Ticker</th>
+                  <th className="px-4 py-3 font-medium">Chart (1Y)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {STOCK_MENU_ITEMS.map((item) => (
+                  <tr
+                    key={item.id}
+                    className={`border-t border-border/70 align-top ${
+                      selectedId === item.id ? "bg-zinc-100/70 dark:bg-zinc-900/50" : ""
+                    }`}
+                  >
+                    <td className="px-4 py-4 font-medium text-foreground">{item.company}</td>
+                    <td className="px-4 py-4 font-mono text-muted-foreground">{item.symbol.replace("NYSE:", "")}</td>
+                    <td className="px-4 py-4">
+                      <iframe
+                        title={`${item.company} 1 year stock chart`}
+                        src={buildTradingViewChartUrl(item.symbol, resolvedDark)}
+                        className="h-[280px] w-full min-w-[440px] rounded-xl border border-border/70 bg-background"
+                        loading="lazy"
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
@@ -3691,6 +3794,7 @@ function ShellScaffold({
     { to: "/", label: "Fleet", end: true, forceActive: false },
     { to: "/products", label: "Products", end: false, forceActive: false },
     { to: "/baselines", label: "Baselines", end: false, forceActive: false },
+    { to: "/some-more", label: "Some More", end: false, forceActive: false },
     { to: "/settings/orgs", label: "Settings", end: false, forceActive: isSettings },
   ];
 
@@ -9037,6 +9141,8 @@ function AppRoutes({
       <Route path="/lanes/:laneId" element={<LaneRoute />} />
       <Route path="/baselines" element={<BaselinesPage baselines={dashboard.baselines} products={dashboard.products} />} />
       <Route path="/baselines/:productId" element={<BaselineRoute />} />
+      <Route path="/some-more" element={<Navigate to="/some-more/barrick" replace />} />
+      <Route path="/some-more/:stockId" element={<SomeMorePage />} />
       <Route path="/graphs/products/:productId" element={<GraphRoute />} />
       <Route path="/settings/*" element={<SharedSettingsWorkspace />} />
       <Route path="*" element={<Navigate to="/" replace />} />

@@ -2184,6 +2184,7 @@ describe("App", () => {
     expect(screen.getByRole("link", { name: "Fleet" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Products" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Baselines" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Some More" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Settings" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Theme" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Help" })).toBeInTheDocument();
@@ -2205,6 +2206,7 @@ describe("App", () => {
     expect(screen.getByRole("link", { name: "Fleet" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Products" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Baselines" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Some More" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Settings" })).toBeInTheDocument();
     expect(screen.getByText("System Configuration")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Search organizations...")).toBeInTheDocument();
@@ -2233,6 +2235,19 @@ describe("App", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Orgs: Primary")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Git Repositories" })).toHaveAttribute("href", "/settings/git-repos");
+  });
+
+  it("renders Some More with Barrick and Ford 1-year charts", async () => {
+    renderApp(["/some-more/ford"]);
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "1 year stock charts" })).toBeInTheDocument();
+    });
+
+    expect(screen.getByRole("link", { name: "Barrick B" })).toHaveAttribute("href", "/some-more/barrick");
+    expect(screen.getByRole("link", { name: "Ford F" })).toHaveAttribute("href", "/some-more/ford");
+    expect(screen.getByTitle("Barrick Gold 1 year stock chart")).toBeInTheDocument();
+    expect(screen.getByTitle("Ford Motor Co. 1 year stock chart")).toBeInTheDocument();
   });
 
   it("requires organization context before rendering repository settings actions", async () => {
