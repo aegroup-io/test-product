@@ -3632,6 +3632,21 @@ function SettingsSidebar() {
   );
 }
 
+function SpacePage() {
+  return (
+    <section className="space-y-5">
+      <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Space!</h1>
+      <div className="overflow-hidden rounded-lg border border-zinc-200 bg-zinc-950 dark:border-zinc-800">
+        <img
+          src="/space-starship.svg"
+          alt="Starship cruising through space"
+          className="mx-auto block max-h-[72vh] w-full object-contain"
+        />
+      </div>
+    </section>
+  );
+}
+
 function ShellScaffold({
   user,
   organizations,
@@ -3691,6 +3706,7 @@ function ShellScaffold({
     { to: "/", label: "Fleet", end: true, forceActive: false },
     { to: "/products", label: "Products", end: false, forceActive: false },
     { to: "/baselines", label: "Baselines", end: false, forceActive: false },
+    { to: "/space", label: "Space!", end: false, forceActive: false },
     { to: "/settings/orgs", label: "Settings", end: false, forceActive: isSettings },
   ];
 
@@ -9038,6 +9054,7 @@ function AppRoutes({
       <Route path="/baselines" element={<BaselinesPage baselines={dashboard.baselines} products={dashboard.products} />} />
       <Route path="/baselines/:productId" element={<BaselineRoute />} />
       <Route path="/graphs/products/:productId" element={<GraphRoute />} />
+      <Route path="/space" element={<SpacePage />} />
       <Route path="/settings/*" element={<SharedSettingsWorkspace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

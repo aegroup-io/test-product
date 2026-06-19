@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Starship in space</title>
+  <desc id="desc">A static illustration of a silver starship flying past stars and a distant planet.</desc>
+  <defs>
+    <linearGradient id="space" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#070b18" />
+      <stop offset="0.52" stop-color="#111827" />
+      <stop offset="1" stop-color="#020617" />
+    </linearGradient>
+    <radialGradient id="planet" cx="48%" cy="45%" r="58%">
+      <stop offset="0" stop-color="#f8fafc" />
+      <stop offset="0.3" stop-color="#7dd3fc" />
+      <stop offset="0.72" stop-color="#2563eb" />
+      <stop offset="1" stop-color="#172554" />
+    </radialGradient>
+    <linearGradient id="hull" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f8fafc" />
+      <stop offset="0.44" stop-color="#cbd5e1" />
+      <stop offset="1" stop-color="#64748b" />
+    </linearGradient>
+    <linearGradient id="window" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#bae6fd" />
+      <stop offset="1" stop-color="#38bdf8" />
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="720" fill="url(#space)" />
+  <g fill="#f8fafc">
+    <circle cx="104" cy="94" r="2.2" opacity="0.9" />
+    <circle cx="188" cy="184" r="1.6" opacity="0.75" />
+    <circle cx="270" cy="88" r="1.9" opacity="0.85" />
+    <circle cx="412" cy="146" r="1.3" opacity="0.65" />
+    <circle cx="552" cy="72" r="2.6" opacity="0.9" />
+    <circle cx="706" cy="128" r="1.5" opacity="0.72" />
+    <circle cx="820" cy="78" r="1.9" opacity="0.85" />
+    <circle cx="1018" cy="142" r="2.3" opacity="0.92" />
+    <circle cx="1110" cy="82" r="1.5" opacity="0.7" />
+    <circle cx="88" cy="444" r="1.6" opacity="0.72" />
+    <circle cx="192" cy="602" r="2.3" opacity="0.9" />
+    <circle cx="386" cy="562" r="1.6" opacity="0.75" />
+    <circle cx="588" cy="646" r="1.7" opacity="0.78" />
+    <circle cx="704" cy="548" r="1.3" opacity="0.64" />
+    <circle cx="972" cy="616" r="2.1" opacity="0.86" />
+    <circle cx="1108" cy="502" r="1.5" opacity="0.68" />
+  </g>
+
+  <g opacity="0.82">
+    <circle cx="1005" cy="485" r="115" fill="url(#planet)" />
+    <path d="M895 470c44 42 150 69 236 48" fill="none" stroke="#e0f2fe" stroke-width="6" opacity="0.55" />
+    <path d="M918 529c46 30 130 43 198 22" fill="none" stroke="#bae6fd" stroke-width="4" opacity="0.42" />
+  </g>
+
+  <g transform="translate(152 198) rotate(-8 420 170)">
+    <path d="M92 206c148-97 333-151 572-158 78-2 146 6 202 25 30 10 44 47 25 73-66 88-181 146-331 172-189 33-374 13-536-48-30-11-33-46-6-64Z" fill="#0f172a" opacity="0.42" />
+    <path d="M112 176c160-105 358-162 609-164 70-1 128 8 174 27 26 11 35 44 17 66-62 76-172 127-329 153-188 30-371 8-533-65-21-10-23-38-4-51 22-15 44-27 66-40Z" fill="url(#hull)" />
+    <path d="M189 137c133-66 292-99 492-99 52 0 101 6 147 18-54 43-132 76-232 99-145 33-285 30-407-18Z" fill="#e2e8f0" opacity="0.72" />
+    <path d="M690 15c69 2 126 10 170 25 23 8 34 35 25 57-47-20-103-31-168-33-8-19-17-35-27-49Z" fill="#f1f5f9" opacity="0.9" />
+    <path d="M79 180 5 260c-11 12-2 31 15 30l143-11c-38-26-66-59-84-99Z" fill="#94a3b8" />
+    <path d="M423 241l-49 112c-7 17 9 34 26 26l151-67c-50-12-93-36-128-71Z" fill="#94a3b8" />
+    <path d="M590 77c-3 26-40 52-82 58-41 6-72-10-69-36 3-26 40-52 82-58 41-6 72 10 69 36Z" fill="url(#window)" />
+    <path d="M291 130c34-16 74-28 120-38" fill="none" stroke="#f8fafc" stroke-width="8" stroke-linecap="round" opacity="0.56" />
+    <path d="M850 74c22 9 39 19 51 31" fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" opacity="0.52" />
+    <g filter="url(#softGlow)">
+      <path d="M34 204c-31 7-66 25-103 54 46 1 87-3 124-14 12-4 19-17 15-29-5-10-18-14-36-11Z" fill="#fb923c" />
+      <path d="M31 210c-21 4-44 15-69 32 30 1 57-2 82-9 8-2 12-10 9-17-3-6-11-8-22-6Z" fill="#fef3c7" />
+    </g>
+  </g>
+</svg>

@@ -2184,6 +2184,7 @@ describe("App", () => {
     expect(screen.getByRole("link", { name: "Fleet" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Products" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Baselines" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Space!" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Settings" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Theme" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Help" })).toBeInTheDocument();
@@ -2205,6 +2206,7 @@ describe("App", () => {
     expect(screen.getByRole("link", { name: "Fleet" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Products" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Baselines" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Space!" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Settings" })).toBeInTheDocument();
     expect(screen.getByText("System Configuration")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Search organizations...")).toBeInTheDocument();
@@ -2215,6 +2217,20 @@ describe("App", () => {
     expect(screen.queryByText("Connections")).not.toBeInTheDocument();
     expect(screen.queryByText("Environments")).not.toBeInTheDocument();
     expect(screen.queryByText("Catalogs")).not.toBeInTheDocument();
+  });
+
+  it("renders the Space tab with a static starship picture", async () => {
+    renderApp(["/space"]);
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Space!" })).toBeInTheDocument();
+    });
+
+    const starshipImage = screen.getByRole("img", {
+      name: "Starship cruising through space",
+    });
+    expect(starshipImage).toHaveAttribute("src", "/space-starship.svg");
+    expect(starshipImage).toHaveClass("object-contain");
   });
 
   it("renders the Git Repositories settings page with org-scoped mappings", async () => {
