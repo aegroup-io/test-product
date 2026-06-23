@@ -22,9 +22,10 @@ if command -v uv >/dev/null 2>&1; then
 fi
 
 PYTHON_BIN="$(agent_core_ensure_repo_python "${ROOT_DIR}")"
-agent_core_ensure_repo_python_modules "${PYTHON_BIN}" fastapi uvicorn -- \
+agent_core_ensure_repo_python_modules "${PYTHON_BIN}" fastapi fastmcp uvicorn -- \
+  -e "${ROOT_DIR}/packages/agent-runtime" \
   -e "${ROOT_DIR}/mcp[dev]"
-export PYTHONPATH="${ROOT_DIR}/mcp/src${PYTHONPATH:+:${PYTHONPATH}}"
+export PYTHONPATH="${ROOT_DIR}/mcp/src:${ROOT_DIR}/packages/agent-runtime/src${PYTHONPATH:+:${PYTHONPATH}}"
 
 exec "${PYTHON_BIN}" -m uvicorn "${MCP_MODULE}.main:app" \
   --reload \

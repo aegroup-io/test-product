@@ -33,9 +33,10 @@ fi
 PYTHON_BIN="$(agent_core_ensure_repo_python "${ROOT_DIR}")"
 agent_core_ensure_repo_python_modules "${PYTHON_BIN}" \
   alembic cryptography fastapi httpx jose psycopg sqlalchemy uvicorn yaml -- \
+  -e "${ROOT_DIR}/packages/agent-runtime" \
   -e "${ROOT_DIR}/packages/platform-api" \
   -e "${ROOT_DIR}/api[dev]"
-export PYTHONPATH="${ROOT_DIR}/api/src:${ROOT_DIR}/packages/platform-api/src${PYTHONPATH:+:${PYTHONPATH}}"
+export PYTHONPATH="${ROOT_DIR}/api/src:${ROOT_DIR}/packages/platform-api/src:${ROOT_DIR}/packages/agent-runtime/src${PYTHONPATH:+:${PYTHONPATH}}"
 
 exec "${PYTHON_BIN}" -m uvicorn "${API_MODULE}.main:app" \
   --reload \

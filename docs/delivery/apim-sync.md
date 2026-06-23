@@ -42,6 +42,14 @@ The current defaults are:
 
 Provide `--service-url` when the backend URL is already known. Otherwise, provide `--service-name` and `--namespace` so the helper can resolve a LoadBalancer address from AKS, optionally refreshing credentials first with `--aks-rg` and `--aks-name`.
 
+Orcha dev normally keeps APIM sync enabled, so `scripts/deploy_api.sh --env dev`
+preserves the LoadBalancer discovery path unless a backend URL is supplied.
+Use `--no-apim` for an internal-only low-cost `ClusterIP` deploy, or provide a
+reachable backend URL through `ORCHA_API_SERVICE_URL` or
+`scripts/deploy_api.sh --service-url`. An explicit `ClusterIP` or `NodePort`
+service type with APIM sync enabled and no service URL is rejected before
+Kubernetes manifests are applied.
+
 `--dry-run` prints the APIM discovery and sync commands without calling Azure CLI or `kubectl`.
 
 ## Local Reproduction

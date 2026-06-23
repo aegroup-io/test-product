@@ -1,0 +1,4 @@
+[global]
+index-url = __ORCHA_PYPI_SIMPLE_INDEX_URL__
+disable-pip-version-check = true
+no-input = true

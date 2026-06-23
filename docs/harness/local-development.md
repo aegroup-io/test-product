@@ -45,6 +45,15 @@ bash scripts/start_local_mcp.sh
 bash scripts/start_local_docs.sh
 ```
 
+For the integrated Agents stack, use:
+
+```bash
+bash scripts/start_local_agents_stack.sh
+bash scripts/smoke_local_agents.sh
+```
+
+See [`local-agents-full-stack.md`](local-agents-full-stack.md) for the API -> worker -> runner -> MCP -> Session smoke path and parity suite.
+
 `scripts/start_local_api.sh` automatically starts the namespaced local Postgres container when
 `AGENT_CORE_DATABASE_URL` is unset. Use `scripts/start_local_postgres.sh` only when you want the
 database running before the API starts.
@@ -84,6 +93,7 @@ These checks validate the currently extracted harness baseline:
 
 - required managed files are present
 - managed markdown files resolve their local path references
+- managed npm and PyPI package-client templates do not contain public registry fallback sources
 - the repo-local Terraform entrypoint validates against the fixed stack contract
 - the managed merge-readiness audit can run in local self-test mode
 - local harness scripts compile
@@ -92,6 +102,8 @@ For direct inspection, the smoke script currently runs:
 
 ```bash
 python3 scripts/validate_repo_harness_assets.py
+python3 scripts/validate_internal_package_sources.py
+bash scripts/smoke_internal_package_registry.sh
 bash scripts/validate_terraform_entrypoint.sh
 python3 scripts/run_merge_readiness_audit.py --self-test --output-dir artifacts/merge-readiness-self-test
 python3 -m compileall scripts

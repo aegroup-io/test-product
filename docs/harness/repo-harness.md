@@ -30,6 +30,8 @@ The baseline harness currently consists of:
 - [`../../scripts/start_local_docs.sh`](../../scripts/start_local_docs.sh)
 - [`../../scripts/stop_local_environment.sh`](../../scripts/stop_local_environment.sh)
 - [`../../scripts/validate_repo_harness_assets.py`](../../scripts/validate_repo_harness_assets.py)
+- [`../../scripts/validate_internal_package_sources.py`](../../scripts/validate_internal_package_sources.py)
+- [`../../scripts/smoke_internal_package_registry.sh`](../../scripts/smoke_internal_package_registry.sh)
 - [`../../scripts/smoke_local.sh`](../../scripts/smoke_local.sh)
 
 ## Current Scope
@@ -42,6 +44,7 @@ The baseline harness validates the currently extracted managed assets:
 - issue templates
 - pull request template
 - the repo harness workflow, local smoke, validator, and managed local-start scripts themselves
+- the managed internal package registry templates and validation smoke
 - the managed merge-readiness audit self-test
 
 It does not validate product-domain runtime behavior.

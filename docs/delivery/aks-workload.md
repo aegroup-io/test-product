@@ -50,12 +50,17 @@ Dry-run an API-style workload deploy:
 bash scripts/deploy_aks_workload.sh \
   --namespace product-dev \
   --manifest api/deploy/deployment.yaml \
-  --manifest api/deploy/service.yaml \
+  --manifest /tmp/rendered-api-service.yaml \
   --workload-name product-api \
   --secret-name product-api-secrets \
   --secret-env-file api/.env.dev \
   --dry-run
 ```
+
+Product wrappers may render service manifests before invoking this baseline helper.
+For Orcha dev, `scripts/deploy_api.sh` preserves the APIM-backed API route with a
+LoadBalancer service when APIM sync is enabled and no explicit backend URL is
+provided. Use `--no-apim` for an internal-only low-cost `ClusterIP` deploy.
 
 Apply without waiting:
 

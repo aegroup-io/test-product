@@ -14,8 +14,12 @@ Current extracted docs:
 - [`apim-sync.md`](apim-sync.md) for the baseline Azure API Management sync helper contract.
 - [`app-service-zip.md`](app-service-zip.md) for the baseline Azure App Service zip packaging and deploy helper contract.
 - [`container-image.md`](container-image.md) for the baseline container-image build/push helper contract.
+- [`dev-azure-runtime.md`](dev-azure-runtime.md) for Orcha dev-only Azure runtime start/stop cost controls.
+- [`dev-azure-cost-guardrails.md`](dev-azure-cost-guardrails.md) for Orcha dev-only Azure cost reporting and budget guardrails.
 - [`delivery-baseline-smoke.md`](delivery-baseline-smoke.md) for the managed repo-level delivery smoke composition contract.
 - [`delivery-release-verification.md`](delivery-release-verification.md) for the managed repo-level release verification contract.
+- [`orcha-release-package.md`](orcha-release-package.md) for the Orcha-specific customer-portable release package producer, validator, workflow, and `orcha-deploy` consumer handoff.
+- [`pulp-package-registry.md`](pulp-package-registry.md) for the Pulp-backed curated npm and PyPI package registry deployment contract.
 - [`remote-smoke.md`](remote-smoke.md) for the baseline remote post-deploy verification contract.
 - [`terraform-backend.md`](terraform-backend.md) for the Azure Terraform backend bootstrap contract.
 - [`terraform-entrypoint-validation.md`](terraform-entrypoint-validation.md) for the baseline local Terraform entrypoint validation contract.

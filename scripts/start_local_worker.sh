@@ -12,6 +12,8 @@ agent_core_apply_local_namespace_contract "${ROOT_DIR}"
 WORKER_MODULE="$(agent_core_product_factory_field "runtime_wrappers.worker_module" "agent_core_starter_worker")"
 export AGENT_CORE_API_BASE_URL="${AGENT_CORE_API_BASE_URL:-${AGENT_CORE_LOCAL_API_URL:-http://127.0.0.1:8000}}"
 export AGENT_CORE_LOCAL_JOB_ROOT="${AGENT_CORE_LOCAL_JOB_ROOT:-${AGENT_CORE_LOCAL_DEV_ROOT}/worker-jobs}"
+export AGENT_CORE_WORKER_AGENT_RUNS_ENABLED="${AGENT_CORE_WORKER_AGENT_RUNS_ENABLED:-1}"
+export AGENT_CORE_LIVE_RUNNER_ENABLED="${AGENT_CORE_LIVE_RUNNER_ENABLED:-0}"
 mkdir -p "${AGENT_CORE_LOCAL_JOB_ROOT}"
 
 cd "${WORKER_DIR}"
@@ -22,8 +24,9 @@ fi
 
 PYTHON_BIN="$(agent_core_ensure_repo_python "${ROOT_DIR}")"
 agent_core_ensure_repo_python_modules "${PYTHON_BIN}" httpx pydantic -- \
+  -e "${ROOT_DIR}/packages/agent-runtime" \
   -e "${ROOT_DIR}/packages/platform-worker" \
   -e "${ROOT_DIR}/worker[dev]"
-export PYTHONPATH="${ROOT_DIR}/worker/src:${ROOT_DIR}/packages/platform-worker/src${PYTHONPATH:+:${PYTHONPATH}}"
+export PYTHONPATH="${ROOT_DIR}/worker/src:${ROOT_DIR}/packages/platform-worker/src:${ROOT_DIR}/packages/agent-runtime/src${PYTHONPATH:+:${PYTHONPATH}}"
 
 exec "${PYTHON_BIN}" -m "${WORKER_MODULE}.devserver" --job-root "${AGENT_CORE_LOCAL_JOB_ROOT}"
