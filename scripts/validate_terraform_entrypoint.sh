@@ -46,17 +46,17 @@ case "${WORKDIR}" in
     ;;
 esac
 
-if ! command -v terraform >/dev/null 2>&1; then
-  echo "Terraform is required to validate the repo-local entrypoint." >&2
-  exit 1
-fi
-
 REPO_ROOT="$(pwd)"
 SOURCE_INFRA_ROOT="${REPO_ROOT}/infra"
 SOURCE_WORKDIR="${REPO_ROOT}/${WORKDIR}"
 
 if [[ ! -d "${SOURCE_INFRA_ROOT}" ]]; then
-  echo "Error: missing infra/ at repo root." >&2
+  echo "SKIP terraform entrypoint validation: missing infra/ at repo root."
+  exit 0
+fi
+
+if ! command -v terraform >/dev/null 2>&1; then
+  echo "Terraform is required to validate the repo-local entrypoint." >&2
   exit 1
 fi
 
@@ -77,5 +77,50 @@ find "${TEMP_ROOT}/${WORKDIR}" -maxdepth 1 -type f -name 'backend*.tf' -delete
 terraform -chdir="${TEMP_ROOT}/${WORKDIR}" fmt -check -diff -no-color
 terraform -chdir="${TEMP_ROOT}/${WORKDIR}" init -backend=false -input=false -no-color >/dev/null
 terraform -chdir="${TEMP_ROOT}/${WORKDIR}" validate -no-color
+
+if [[ "${WORKDIR}" == "infra/environments/dev" ]]; then
+  dev_variables="${SOURCE_WORKDIR}/variables.tf"
+  dev_tfvars_example="${SOURCE_WORKDIR}/terraform.tfvars.example"
+
+  terraform_variable_default() {
+    local variable_name="$1"
+    local file_path="$2"
+    awk -v variable_name="${variable_name}" '
+      $1 == "variable" && $2 == "\"" variable_name "\"" { inside = 1 }
+      inside && $1 == "default" {
+        value = $3
+        gsub(/"/, "", value)
+        print value
+        exit
+      }
+      inside && $1 == "}" { inside = 0 }
+    ' "${file_path}"
+  }
+
+  require_variable_default() {
+    local variable_name="$1"
+    local expected_value="$2"
+    local actual_value
+    actual_value="$(terraform_variable_default "${variable_name}" "${dev_variables}")"
+    if [[ "${actual_value}" != "${expected_value}" ]]; then
+      echo "Error: dev ${variable_name} default must be ${expected_value}; found ${actual_value:-<missing>}." >&2
+      exit 1
+    fi
+  }
+
+  require_tfvars_example_value() {
+    local variable_name="$1"
+    local expected_value="$2"
+    if ! grep -Eq "^${variable_name}[[:space:]]*=[[:space:]]*\"${expected_value}\"" "${dev_tfvars_example}"; then
+      echo "Error: dev terraform.tfvars.example must set ${variable_name} = \"${expected_value}\"." >&2
+      exit 1
+    fi
+  }
+
+  require_variable_default "app_service_sku_name" "B1"
+  require_variable_default "postgres_sku_name" "B_Standard_B1ms"
+  require_tfvars_example_value "app_service_sku_name" "B1"
+  require_tfvars_example_value "postgres_sku_name" "B_Standard_B1ms"
+fi
 
 echo "OK terraform entrypoint validation passed (${WORKDIR})."

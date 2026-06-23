@@ -105,7 +105,7 @@ jobs:
           CODEX_REVIEW_MODEL: ${{ vars.CODEX_REVIEW_MODEL }}
           CODEX_SANDBOX_MODE: danger-full-access
         run: |
-          python3 scripts/run_advisory_code_review.py \
+          timeout 15m python3 scripts/run_advisory_code_review.py \
             --base-ref "origin/${{ steps.context.outputs.base_ref }}" \
             --pr-number "${{ steps.context.outputs.pr_number }}" \
             --output-dir "${RUNNER_TEMP}/advisory-code-review"

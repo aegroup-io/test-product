@@ -28,8 +28,13 @@ Current canonical docs:
 - [`remote-execution-environments.md`](remote-execution-environments.md) for claimed-lane provisioning, workspace hydration, continuation-safety, and cleanup semantics.
 - [`runner-protocol-and-session-events.md`](runner-protocol-and-session-events.md) for the durable `agent-core` launch contract, handshake state, event persistence, pause semantics, and timeout/error mapping.
 - [`graph-overlays-and-context-slices.md`](graph-overlays-and-context-slices.md) for operational overlays on the component graph, bounded slice read models, prompt-context shaping, and freshness semantics.
+- [`agent-chat-workspace.md`](agent-chat-workspace.md) for chat-enabled agent discovery, durable thread/file/run/output persistence, AG-UI-style stream events, and the reusable workspace pane contract.
+- [`agent-runner-parity.md`](agent-runner-parity.md) for Orcha-native generic agent runs, worker execution, gds_core runner parity, MCP tool loading, and Session/AI note links.
+- [`internal-fastmcp-service.md`](internal-fastmcp-service.md) for the internal FastMCP service boundary, tool registry, compatibility adapter, deployment path, and MCP access model.
+- [`orcha-agent-runtime-libraries.md`](orcha-agent-runtime-libraries.md) for shared Orcha runtime package ownership, agent framework config, and MCP/gds_core import boundaries.
 - [`governance-and-production-readiness.md`](governance-and-production-readiness.md) for durable approval posture, runner-side governance enforcement, secret redaction, runtime identity scope, and write-audit semantics.
 - [`observability-and-operator-notifications.md`](observability-and-operator-notifications.md) for structured signal correlation, fleet and lane observability read models, and operator-visible notification semantics.
 - [`retry-recovery-and-reconciliation.md`](retry-recovery-and-reconciliation.md) for transient retry policy, startup recovery, active-lane reconciliation, and orphan cleanup semantics.
 - [`operator-api-v1.md`](operator-api-v1.md) for the versioned operator contract, read-model composition, intervention semantics, and current RBAC boundary.
 - [`operator-web-ui.md`](operator-web-ui.md) for the Orcha-native web route topology, operator shell boundary, and `/v1` read-model binding.
+- [`release-package-and-customer-handoff.md`](release-package-and-customer-handoff.md) for the AEGroup-owned release package producer boundary and customer-owned `orcha-deploy` deployment consumer model.

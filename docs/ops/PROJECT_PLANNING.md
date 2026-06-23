@@ -8,6 +8,18 @@ Issues are the unit of execution.
 
 Pull requests must map cleanly to one issue lane.
 
+## Generated Requirements Issues
+
+Requirements assistant generated issues must follow the durable taxonomy in
+[`../harness/requirements-issue-taxonomy.md`](../harness/requirements-issue-taxonomy.md).
+
+Generated issue bodies must not include pull-request closing keywords such as `Closes`, `Fixes`, or
+`Resolves` unless a human explicitly asks to close an existing issue. Use `Part of #...` and
+`Depends on #...` for issue relationships.
+
+Each generated issue must have exactly one `type:*` label before publication. Missing required type
+labels block publication when they cannot be safely created in the target repository.
+
 ## Pull Request Rules
 
 PR packaging rules:

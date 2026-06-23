@@ -47,6 +47,26 @@
       "mode": "replace"
     },
     {
+      "source": "factory/managed-repo/.orcha/package-registry/npmrc.template",
+      "target": ".orcha/package-registry/npmrc.template",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.orcha/package-registry/pip.conf.template",
+      "target": ".orcha/package-registry/pip.conf.template",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.orcha/package-registry/uv.toml.template",
+      "target": ".orcha/package-registry/uv.toml.template",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/.orcha/package-registry/package-registry.env.example",
+      "target": ".orcha/package-registry/package-registry.env.example",
+      "mode": "replace"
+    },
+    {
       "source": "factory/managed-repo/.github/workflows/advisory-code-review.yml",
       "target": ".github/workflows/advisory-code-review.yml",
       "mode": "replace"
@@ -162,8 +182,18 @@
       "mode": "replace"
     },
     {
+      "source": "factory/managed-repo/docs/harness/internal-package-registry.md",
+      "target": "docs/harness/internal-package-registry.md",
+      "mode": "replace"
+    },
+    {
       "source": "factory/managed-repo/docs/harness/local-development.md",
       "target": "docs/harness/local-development.md",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/docs/harness/requirements-issue-taxonomy.md",
+      "target": "docs/harness/requirements-issue-taxonomy.md",
       "mode": "replace"
     },
     {
@@ -207,6 +237,11 @@
       "mode": "replace"
     },
     {
+      "source": "factory/managed-repo/scripts/deploy_api.sh",
+      "target": "scripts/deploy_api.sh",
+      "mode": "replace"
+    },
+    {
       "source": "factory/managed-repo/scripts/sync_apim_api.sh",
       "target": "scripts/sync_apim_api.sh",
       "mode": "replace"
@@ -219,6 +254,16 @@
     {
       "source": "factory/managed-repo/scripts/validate_terraform_entrypoint.sh",
       "target": "scripts/validate_terraform_entrypoint.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/validate_internal_package_sources.py",
+      "target": "scripts/validate_internal_package_sources.py",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/smoke_internal_package_registry.sh",
+      "target": "scripts/smoke_internal_package_registry.sh",
       "mode": "replace"
     },
     {
@@ -242,8 +287,23 @@
       "mode": "replace"
     },
     {
+      "source": "factory/managed-repo/scripts/load-env.sh",
+      "target": "scripts/load-env.sh",
+      "mode": "replace"
+    },
+    {
       "source": "factory/managed-repo/scripts/local_namespace.sh",
       "target": "scripts/local_namespace.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/local_postgres_runtime.sh",
+      "target": "scripts/local_postgres_runtime.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/local_python_runtime.sh",
+      "target": "scripts/local_python_runtime.sh",
       "mode": "replace"
     },
     {
@@ -272,8 +332,18 @@
       "mode": "replace"
     },
     {
+      "source": "factory/managed-repo/scripts/smoke_local_container.sh",
+      "target": "scripts/smoke_local_container.sh",
+      "mode": "replace"
+    },
+    {
       "source": "factory/managed-repo/scripts/start_local_api.sh",
       "target": "scripts/start_local_api.sh",
+      "mode": "replace"
+    },
+    {
+      "source": "factory/managed-repo/scripts/start_local_postgres.sh",
+      "target": "scripts/start_local_postgres.sh",
       "mode": "replace"
     },
     {
