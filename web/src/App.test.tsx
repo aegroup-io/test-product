@@ -2193,6 +2193,18 @@ describe("App", () => {
     expect(screen.queryByText("System Configuration")).not.toBeInTheDocument();
   });
 
+  it("shows the product name and description when About is selected", async () => {
+    renderApp();
+
+    const navigation = await screen.findByRole("navigation");
+    const aboutLink = within(navigation).getByRole("link", { name: "About" });
+    fireEvent.click(aboutLink);
+
+    expect(aboutLink).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("heading", { level: 1, name: "Test Product" })).toBeVisible();
+    expect(screen.getByText("A sample product used to exercise Orcha lanes.")).toBeVisible();
+  });
+
   it("renders the exact shared settings workspace used by tyler-test", async () => {
     renderApp(["/settings/orgs"]);
 

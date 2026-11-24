@@ -3692,6 +3692,7 @@ function ShellScaffold({
     { to: "/products", label: "Products", end: false, forceActive: false },
     { to: "/baselines", label: "Baselines", end: false, forceActive: false },
     { to: "/settings/orgs", label: "Settings", end: false, forceActive: isSettings },
+    { to: "/about", label: "About", end: true, forceActive: false },
   ];
 
   return (
@@ -9039,6 +9040,16 @@ function AppRoutes({
       <Route path="/baselines/:productId" element={<BaselineRoute />} />
       <Route path="/graphs/products/:productId" element={<GraphRoute />} />
       <Route path="/settings/*" element={<SharedSettingsWorkspace />} />
+      <Route
+        path="/about"
+        element={
+          <PageHeader
+            eyebrow="About"
+            title="Test Product"
+            description="A sample product used to exercise Orcha lanes."
+          />
+        }
+      />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
